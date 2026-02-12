@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import linregress
 from datetime import datetime
 
 # Load data
@@ -25,8 +24,26 @@ winter_temps = seasonal_avg(df, winter_months)
 summer_rain = rainfall_avg(df, summer_months)
 
 # Linear regression for summer temps
+
+# Linear regression from scratch (least squares)
 def analyze_trend(years, values, label):
-    slope, intercept, r_value, p_value, std_err = linregress(years, values)
+    x = np.array(years)
+    y = np.array(values)
+    n = len(x)
+    x_mean = np.mean(x)
+    y_mean = np.mean(y)
+    Sxy = np.sum((x - x_mean) * (y - y_mean))
+    Sxx = np.sum((x - x_mean) ** 2)
+    slope = Sxy / Sxx
+    intercept = y_mean - slope * x_mean
+    # Pearson correlation coefficient
+    r_num = np.sum((x - x_mean) * (y - y_mean))
+    r_den = np.sqrt(np.sum((x - x_mean) ** 2) * np.sum((y - y_mean) ** 2))
+    r_value = r_num / r_den if r_den != 0 else 0
+    # Calculate p-value (two-sided, t-distribution)
+    t_stat = r_value * np.sqrt((n - 2) / (1 - r_value ** 2)) if n > 2 and abs(r_value) < 1 else 0
+    from scipy.stats import t
+    p_value = 2 * t.sf(np.abs(t_stat), df=n - 2) if n > 2 else 1
     print(f"{label} regression: y = {slope:.3f}x + {intercept:.2f}")
     print(f"Slope: {slope:.3f} per year")
     print(f"Correlation coefficient r = {r_value:.2f}")
