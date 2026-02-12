@@ -67,6 +67,7 @@ def analyze_trend(years, values, label):
     print(f"Correlation coefficient r = {r_value:.2f}")
     print(f"P-value = {p_value:.4f}")
 
+
     # Compare with scipy's linregress
     try:
         from scipy.stats import linregress
@@ -79,6 +80,19 @@ def analyze_trend(years, values, label):
     except Exception as e:
         print("[scipy] linregress not available or failed:", e)
 
+    # Polynomial (quadratic) regression
+    if n >= 3:
+        quad_coefs = np.polyfit(x, y, 2)
+        quad_poly = np.poly1d(quad_coefs)
+        y_quad_pred = quad_poly(x)
+        ss_res_quad = np.sum((y - y_quad_pred) ** 2)
+        ss_tot = np.sum((y - np.mean(y)) ** 2)
+        r2_quad = 1 - ss_res_quad / ss_tot if ss_tot > 0 else 0
+        print(f"[poly2] regression: y = {quad_coefs[0]:.5f}x^2 + {quad_coefs[1]:.3f}x + {quad_coefs[2]:.2f}")
+        print(f"[poly2] R^2 = {r2_quad:.3f}")
+    else:
+        print("[poly2] Not enough data for quadratic regression.")
+
     # Return also standard error for confidence bands
     return slope, intercept, r_value, p_value, slope_se, intercept_se, residual_std
 
@@ -87,10 +101,17 @@ def plot_trend(years, values, slope, intercept, label, ylabel, slope_se, interce
     x = np.array(years)
     y = np.array(values)
     n = len(x)
-    # Scatter and trend line
+
+    # Scatter, trend line, and quadratic fit
     plt.figure(figsize=(10, 6))
     plt.scatter(x, y, label='Avg ' + label)
-    plt.plot(x, slope * x + intercept, color='red', label='Trend line')
+    plt.plot(x, slope * x + intercept, color='red', label='Linear Trend')
+    # Quadratic fit
+    if n >= 3:
+        quad_coefs = np.polyfit(x, y, 2)
+        quad_poly = np.poly1d(quad_coefs)
+        x_dense = np.linspace(np.min(x), np.max(x), 200)
+        plt.plot(x_dense, quad_poly(x_dense), color='green', linestyle='--', label='Quadratic Trend')
     # Confidence band (95%)
     from scipy.stats import t
     alpha = 0.05
