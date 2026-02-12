@@ -5,15 +5,21 @@ from datetime import datetime
 
 # Load data
 df = pd.read_csv('weather_data.csv', parse_dates=['date'])
+# Drop rows with missing values in relevant columns
+df = df.dropna(subset=['date', 'temp_celsius', 'rainfall_mm', 'humidity_percent'])
 df['year'] = df['date'].dt.year
 df['month'] = df['date'].dt.month
 
 # Helper: get seasonal averages
+
 def seasonal_avg(df, months):
-    return df[df['month'].isin(months)].groupby('year')['temp_celsius'].mean()
+    # Drop missing temp_celsius values for the selected months
+    return df[df['month'].isin(months)].dropna(subset=['temp_celsius']).groupby('year')['temp_celsius'].mean()
+
 
 def rainfall_avg(df, months):
-    return df[df['month'].isin(months)].groupby('year')['rainfall_mm'].mean()
+    # Drop missing rainfall_mm values for the selected months
+    return df[df['month'].isin(months)].dropna(subset=['rainfall_mm']).groupby('year')['rainfall_mm'].mean()
 
 # Summer: Jun-Aug, Winter: Dec-Feb
 summer_months = [6, 7, 8]
