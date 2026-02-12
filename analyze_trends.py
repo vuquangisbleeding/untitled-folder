@@ -66,22 +66,48 @@ def analyze_trend(years, values, label):
     print(f"Intercept: {intercept:.2f} (95% CI: {intercept_ci[0]:.2f} to {intercept_ci[1]:.2f})")
     print(f"Correlation coefficient r = {r_value:.2f}")
     print(f"P-value = {p_value:.4f}")
-    return slope, intercept, r_value, p_value
+    # Return also standard error for confidence bands
+    return slope, intercept, r_value, p_value, slope_se, intercept_se, residual_std
 
-def plot_trend(years, values, slope, intercept, label, ylabel):
-    plt.scatter(years, values, label='Avg ' + label)
-    plt.plot(years, slope * years + intercept, color='red', label='Trend line')
+
+def plot_trend(years, values, slope, intercept, label, ylabel, slope_se, intercept_se, residual_std):
+    x = np.array(years)
+    y = np.array(values)
+    n = len(x)
+    # Scatter and trend line
+    plt.figure(figsize=(10, 6))
+    plt.scatter(x, y, label='Avg ' + label)
+    plt.plot(x, slope * x + intercept, color='red', label='Trend line')
+    # Confidence band (95%)
+    from scipy.stats import t
+    alpha = 0.05
+    t_crit = t.ppf(1 - alpha/2, df=n-2) if n > 2 else 0
+    y_pred = slope * x + intercept
+    Sxx = np.sum((x - np.mean(x)) ** 2)
+    conf_band = t_crit * residual_std * np.sqrt(1/n + (x - np.mean(x))**2 / Sxx) if n > 2 and Sxx > 0 else 0
+    if isinstance(conf_band, np.ndarray):
+        plt.fill_between(x, y_pred - conf_band, y_pred + conf_band, color='orange', alpha=0.2, label='95% Confidence Band')
     plt.xlabel('Year')
     plt.ylabel(ylabel)
     plt.title(f'{label} Trend')
     plt.legend()
     plt.show()
 
+    # Residuals plot
+    plt.figure(figsize=(10, 4))
+    plt.scatter(x, y - y_pred, color='purple', label='Residuals')
+    plt.axhline(0, color='gray', linestyle='--')
+    plt.xlabel('Year')
+    plt.ylabel('Residual')
+    plt.title(f'{label} Residuals')
+    plt.legend()
+    plt.show()
+
 print('--- Summer Temperature Trend ---')
 s_years = summer_temps.index.values
 s_values = summer_temps.values
-s_slope, s_intercept, s_r, s_p = analyze_trend(s_years, s_values, 'Summer Temp')
-plot_trend(s_years, s_values, s_slope, s_intercept, 'Summer Temp', 'Avg Temp (°C)')
+s_slope, s_intercept, s_r, s_p, s_slope_se, s_intercept_se, s_resid = analyze_trend(s_years, s_values, 'Summer Temp')
+plot_trend(s_years, s_values, s_slope, s_intercept, 'Summer Temp', 'Avg Temp (°C)', s_slope_se, s_intercept_se, s_resid)
 
 # Predict 2030 summer temp
 future_year = 2030
@@ -91,14 +117,14 @@ print(f"Predicted summer avg temp in {future_year}: {pred_temp:.2f}°C")
 print('\n--- Winter Temperature Trend ---')
 w_years = winter_temps.index.values
 w_values = winter_temps.values
-w_slope, w_intercept, w_r, w_p = analyze_trend(w_years, w_values, 'Winter Temp')
-plot_trend(w_years, w_values, w_slope, w_intercept, 'Winter Temp', 'Avg Temp (°C)')
+w_slope, w_intercept, w_r, w_p, w_slope_se, w_intercept_se, w_resid = analyze_trend(w_years, w_values, 'Winter Temp')
+plot_trend(w_years, w_values, w_slope, w_intercept, 'Winter Temp', 'Avg Temp (°C)', w_slope_se, w_intercept_se, w_resid)
 
 print('\n--- Summer Rainfall Trend ---')
 r_years = summer_rain.index.values
 r_values = summer_rain.values
-r_slope, r_intercept, r_r, r_p = analyze_trend(r_years, r_values, 'Summer Rainfall')
-plot_trend(r_years, r_values, r_slope, r_intercept, 'Summer Rainfall', 'Avg Rainfall (mm)')
+r_slope, r_intercept, r_r, r_p, r_slope_se, r_intercept_se, r_resid = analyze_trend(r_years, r_values, 'Summer Rainfall')
+plot_trend(r_years, r_values, r_slope, r_intercept, 'Summer Rainfall', 'Avg Rainfall (mm)', r_slope_se, r_intercept_se, r_resid)
 
 # Summary
 print('\n--- Conclusion ---')
