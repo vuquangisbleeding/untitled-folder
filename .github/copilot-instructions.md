@@ -1,0 +1,7 @@
+- [x] Clarify Project Requirements: Project type, language, and frameworks specified.
+- [x] Scaffold the Project: Create Python project structure, requirements.txt, README.md, and .github/copilot-instructions.md.
+- [x] Customize the Project: Implement analysis code as described.
+- [x] Compile the Project: Install dependencies and check for errors.
+- [x] Create and Run Task: Add VS Code task if needed.
+- [x] Launch the Project: Provide run/debug instructions.
+- [ ] Ensure Documentation is Complete: README.md and copilot-instructions.md are up to date.
