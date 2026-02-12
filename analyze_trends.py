@@ -44,8 +44,20 @@ def analyze_trend(years, values, label):
     t_stat = r_value * np.sqrt((n - 2) / (1 - r_value ** 2)) if n > 2 and abs(r_value) < 1 else 0
     from scipy.stats import t
     p_value = 2 * t.sf(np.abs(t_stat), df=n - 2) if n > 2 else 1
+    # Standard error and confidence intervals for slope and intercept
+    y_pred = slope * x + intercept
+    residuals = y - y_pred
+    residual_std = np.sqrt(np.sum(residuals ** 2) / (n - 2)) if n > 2 else 0
+    slope_se = residual_std / np.sqrt(Sxx) if Sxx > 0 and n > 2 else 0
+    intercept_se = residual_std * np.sqrt(1/n + x_mean**2/Sxx) if Sxx > 0 and n > 2 else 0
+    # 95% confidence intervals
+    alpha = 0.05
+    t_crit = t.ppf(1 - alpha/2, df=n-2) if n > 2 else 0
+    slope_ci = (slope - t_crit * slope_se, slope + t_crit * slope_se)
+    intercept_ci = (intercept - t_crit * intercept_se, intercept + t_crit * intercept_se)
     print(f"{label} regression: y = {slope:.3f}x + {intercept:.2f}")
-    print(f"Slope: {slope:.3f} per year")
+    print(f"Slope: {slope:.3f} per year (95% CI: {slope_ci[0]:.3f} to {slope_ci[1]:.3f})")
+    print(f"Intercept: {intercept:.2f} (95% CI: {intercept_ci[0]:.2f} to {intercept_ci[1]:.2f})")
     print(f"Correlation coefficient r = {r_value:.2f}")
     print(f"P-value = {p_value:.4f}")
     return slope, intercept, r_value, p_value
