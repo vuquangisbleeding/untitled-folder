@@ -66,6 +66,19 @@ def analyze_trend(years, values, label):
     print(f"Intercept: {intercept:.2f} (95% CI: {intercept_ci[0]:.2f} to {intercept_ci[1]:.2f})")
     print(f"Correlation coefficient r = {r_value:.2f}")
     print(f"P-value = {p_value:.4f}")
+
+    # Compare with scipy's linregress
+    try:
+        from scipy.stats import linregress
+        res = linregress(x, y)
+        print("[scipy] regression: y = {:.3f}x + {:.2f}".format(res.slope, res.intercept))
+        print("[scipy] Slope: {:.3f} per year".format(res.slope))
+        print("[scipy] Intercept: {:.2f}".format(res.intercept))
+        print("[scipy] r = {:.2f}".format(res.rvalue))
+        print("[scipy] p-value = {:.4f}".format(res.pvalue))
+    except Exception as e:
+        print("[scipy] linregress not available or failed:", e)
+
     # Return also standard error for confidence bands
     return slope, intercept, r_value, p_value, slope_se, intercept_se, residual_std
 
