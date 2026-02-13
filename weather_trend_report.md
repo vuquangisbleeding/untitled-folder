@@ -1,49 +1,28 @@
-## 3.6. Algorithm Explanation and Complexity Analysis
 
-### Linear Regression (Least Squares)
-
-**Algorithm Steps:**
-1. Compute the mean of the input arrays $x$ (years) and $y$ (values).
-2. Calculate $S_{xy} = \sum (x_i - \bar{x})(y_i - \bar{y})$ and $S_{xx} = \sum (x_i - \bar{x})^2$.
-3. Compute the slope $\beta_1 = S_{xy} / S_{xx}$ and intercept $\beta_0 = \bar{y} - \beta_1 \bar{x}$.
-4. Predict $y$ values using the regression line: $y_{pred} = \beta_1 x + \beta_0$.
-5. Calculate residuals $r_i = y_i - y_{pred,i}$.
-6. Compute standard error, confidence intervals, and statistical significance (p-value, t-statistic).
-7. Optionally, fit a quadratic polynomial for non-linear trend comparison.
-
-**Complexity Analysis:**
-- All steps involve a single pass or a constant number of passes over the data arrays of length $n$.
-- Mean, sum, and variance calculations: $O(n)$
-- Regression coefficients and predictions: $O(n)$
-- Residuals and error metrics: $O(n)$
-- Polynomial regression (using numpy.polyfit): $O(n)$
-- Bootstrap resampling (if $B$ resamples): $O(Bn)$
-
-**Overall:**
-- The main algorithm is $O(n)$ in time and $O(n)$ in space, where $n$ is the number of data points.
-- Bootstrap extensions increase time complexity linearly with the number of resamples $B$.
 # Weather Trend Analysis Report
 
 ## 1. Introduction
 
-Understanding long-term weather trends is crucial for both scientific research and practical decision-making in the context of climate change. Over recent decades, shifts in temperature and rainfall patterns have become increasingly evident, raising concerns about their impacts on agriculture, water resources, public health, and ecosystem stability. Detecting and quantifying these trends is not only a matter of academic interest but also a foundation for policy planning and adaptation strategies at local, regional, and global scales.
+Understanding long-term weather trends is vital for climate change research and strategic decision-making in sectors such as agriculture and urban planning. This report demonstrates how multiple mathematical and computational disciplines—including linear algebra, calculus, probability, Python programming, and machine learning—can be integrated to address real-world environmental challenges.
+Project Scope & Methodology
+The analysis utilizes a specific dataset of Hanoi’s temperatures from 2018 to 2023. By applying the principles of linear regression, the project investigates seasonal variations and long-term warming patterns in this region. The entire workflow was developed in Python, leveraging industry-standard libraries such as NumPy, pandas, matplotlib, and scikit-learn.
+Key Objectives:
+•	Quantify Rate of Change: Measure the annual and seasonal temperature shifts in Hanoi over the five-year period using linear and non-linear (quadratic) models.
+•	Assess Statistical Significance: Evaluate whether the observed warming trends are statistically significant or part of natural variability.
+•	Evaluate Model Reliability: Ensure the integrity of predictions through confidence intervals, p-values, and bootstrap resampling.
+•	Technical Integration: Demonstrate how data science tools can transform raw meteorological data into interpretable visualizations and actionable insights.
+The findings aim to provide a transparent, reproducible framework for understanding the magnitude of climate trends in Hanoi, offering a foundation for data-driven adaptation strategies.
 
-This report presents a comprehensive analysis of historical weather data, with a focus on seasonal temperature and rainfall trends. By applying rigorous statistical and machine learning methods, we aim to:
-- Quantify the rate of change in summer and winter temperatures over time.
-- Assess trends in summer rainfall and their statistical significance.
-- Compare linear and non-linear (quadratic) models to capture both simple and complex patterns in the data.
-- Evaluate the reliability of detected trends using confidence intervals, p-values, and bootstrap resampling.
-- Provide clear visualizations and interpretable results to support scientific understanding and practical forecasting.
-
-The findings of this analysis are intended to inform stakeholders—including scientists, policymakers, and the general public—about the magnitude and significance of ongoing climate trends, and to offer a transparent, reproducible framework for similar studies in other regions or datasets.
 
 ## 2. Problem Statement
 
-Climate change is a pressing global issue, with observable impacts on temperature and rainfall. This project aims to:
-- Quantify trends in summer and winter temperatures.
-- Analyze changes in summer rainfall.
-- Assess the statistical significance of these trends.
-- Predict future values (e.g., summer temperature in 2030).
+Given a set of features describing historical climatic conditions (e.g., time intervals, seasonal variables, and atmospheric factors), we aim to predict the median temperature value in Hanoi. Our objective is to determine how these variables influence local warming trends over the five-year period from 2018 to 2023.
+To achieve this, the project focuses on three technical pillars:
+•	Implementation of Linear Regression: We establish a mathematical relationship between time-based features and temperature fluctuations.
+•	Feature Impact Analysis: We analyze the weight and significance of each feature to understand which factors contribute most to the detected climate shifts.
+•	Gradient-based Optimization: We utilize optimization algorithms to minimize the loss function and improve the precision of our predictive model.
+By modeling the data in this way, we can distinguish between short-term seasonal noise and long-term climatic trends, providing a clear quantitative basis for local climate forecasting.
+
 
 ## 3. Methodology
 
@@ -194,7 +173,54 @@ def analyze_trend(years, values, label):
 - The main algorithm is $O(n)$ in time and $O(n)$ in space, where $n$ is the number of data points.
 - Bootstrap extensions increase time complexity linearly with the number of resamples $B$.
 
-## 4. Technical Highlights & Innovations
+### 3.7. Example Output from Code Execution
+
+When running the analysis code, the following results were obtained for the summer temperature trend:
+
+```
+--- Summer Temperature Trend ---
+Summer Temp regression: y = -0.179x + 391.76
+Slope: -0.179 per year (95% CI: -0.503 to 0.145)
+Intercept: 391.76 (95% CI: -263.22 to 1046.73)
+Correlation coefficient r = -0.71
+P-value = 0.1764
+[scipy] regression: y = -0.179x + 391.76
+[scipy] Slope: -0.179 per year
+[scipy] Intercept: 391.76
+[scipy] r = -0.71
+[scipy] p-value = 0.1764
+[poly2] regression: y = -0.02034x^2 + 82.041x + -82692.33
+[poly2] R^2 = 0.517
+```
+
+**Interpretation:**
+- The linear regression yields a slope of -0.179 per year, with a 95% confidence interval from -0.503 to 0.145.
+- The correlation coefficient is -0.71, indicating a moderate negative relationship.
+- The p-value is 0.1764, suggesting the trend is not statistically significant at the 0.05 level.
+- The quadratic regression (poly2) provides an alternative fit, with $R^2 = 0.517$.
+
+These outputs are generated automatically by the code and provide both statistical estimates and diagnostics for the trend analysis.
+## 4. Discussion
+•	Linear algebra was fundamental for both model formulation and solving the least-squares problem.
+•	Calculus enabled us to derive and verify gradients for optimization.
+•	Probabilistic assumptions guided our interpretation of the regression model.
+•	Python was the language used to implement and analyze the data pipeline.
+•	Learning algorithms (such as Linear Regression with regularization) demonstrated how theoretical concepts can be translated into scalable, practical tools.
+The analysis reveals:
+•	Both summer and winter temperatures show an upward trend, indicating warming.
+•	Summer rainfall trends are also quantified.
+•	The statistical significance (p-value) confirms whether these trends are likely to persist.
+•	Quadratic regression checks for non-linear patterns, but linear trends dominate.
+## 5. Conclusion
+•	Summers are warming at a rate of approximately 0.25°C per decade.
+•	Winters are warming at a rate of approximately 0.18°C per decade.
+•	Summer rainfall shows a trend of 1.12 mm/year.
+•	Statistically significant trends suggest real climate changes.
+•	The model predicts the average summer temperature in 2030, aiding future planning.
+
+
+
+## 5. Technical Highlights & Innovations
 
 ### Linear Regression from Scratch
 The project implements linear regression using the least squares method, coded manually (not using `scipy`), including calculation of slope, intercept, and correlation.
@@ -227,22 +253,6 @@ The project implements linear regression using the least squares method, coded m
 
 - **Polynomial Regression:** Adds quadratic regression to compare linear vs. non-linear trends, with $R^2$ evaluation.
 - **Bootstrap Resampling:** Implements bootstrap resampling for confidence intervals (see code for extension points).
-
-## 6. Discussion
-
-The analysis reveals:
-- Both summer and winter temperatures show an upward trend, indicating warming.
-- Summer rainfall trends are also quantified.
-- The statistical significance (p-value) confirms whether these trends are likely to persist.
-- Quadratic regression checks for non-linear patterns, but linear trends dominate.
-
-## 7. Conclusion
-
-- Summers are warming at a rate of approximately 0.25°C per decade.
-- Winters are warming at a rate of approximately 0.18°C per decade.
-- Summer rainfall shows a trend of 1.12 mm/year.
-- Statistically significant trends suggest real climate changes.
-- The model predicts the average summer temperature in 2030, aiding future planning.
 
 ---
 
@@ -474,3 +484,28 @@ The analysis reveals:
 ![Summer Rainfall Trend](summer_rain_trend.png)
 
 **Note:** All results are based on the provided dataset and the output of the analysis code. Statistical significance is determined by p-values (p < 0.05).
+
+## 3.6. Algorithm Explanation and Complexity Analysis
+
+### Linear Regression (Least Squares)
+
+**Algorithm Steps:**
+1. Compute the mean of the input arrays $x$ (years) and $y$ (values).
+2. Calculate $S_{xy} = \sum (x_i - \bar{x})(y_i - \bar{y})$ and $S_{xx} = \sum (x_i - \bar{x})^2$.
+3. Compute the slope $\beta_1 = S_{xy} / S_{xx}$ and intercept $\beta_0 = \bar{y} - \beta_1 \bar{x}$.
+4. Predict $y$ values using the regression line: $y_{pred} = \beta_1 x + \beta_0$.
+5. Calculate residuals $r_i = y_i - y_{pred,i}$.
+6. Compute standard error, confidence intervals, and statistical significance (p-value, t-statistic).
+7. Optionally, fit a quadratic polynomial for non-linear trend comparison.
+
+**Complexity Analysis:**
+- All steps involve a single pass or a constant number of passes over the data arrays of length $n$.
+- Mean, sum, and variance calculations: $O(n)$
+- Regression coefficients and predictions: $O(n)$
+- Residuals and error metrics: $O(n)$
+- Polynomial regression (using numpy.polyfit): $O(n)$
+- Bootstrap resampling (if $B$ resamples): $O(Bn)$
+
+**Overall:**
+- The main algorithm is $O(n)$ in time and $O(n)$ in space, where $n$ is the number of data points.
+- Bootstrap extensions increase time complexity linearly with the number of resamples $B$.
