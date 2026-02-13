@@ -30,6 +30,18 @@ By modeling the data in this way, we can distinguish between short-term seasonal
 
 Linear regression is used to model the relationship between year and weather variables. The least squares method minimizes the sum of squared residuals to find the best-fit line:
 
+#### Key Statistical Concepts
+
+- **Regression equations:** Regression equations describe the relationship between an independent variable (e.g., year) and a dependent variable (e.g., temperature). The general form is $y = \beta_1 x + \beta_0$, where $\beta_1$ is the slope (trend per year) and $\beta_0$ is the intercept.
+- **$R^2$ (Coefficient of determination):** $R^2$ measures how well the regression model fits the data. Values closer to 1 indicate a better fit, while values near 0 mean the model explains little of the variation.
+- **p-value:** The p-value quantifies the probability that the observed trend is due to random chance. A small p-value (typically < 0.05) suggests the trend is statistically significant.
+- **Confidence intervals:** Confidence intervals provide a range within which the true value of a regression coefficient (such as slope) is likely to fall, with a specified probability (usually 95%).
+
+**References:**
+- Montgomery, D. C., & Runger, G. C. (2014). _Applied Statistics and Probability for Engineers_ (6th ed.). Wiley.
+- Hastie, T., Tibshirani, R., & Friedman, J. (2009). _The Elements of Statistical Learning: Data Mining, Inference, and Prediction_ (2nd ed.). Springer.
+- Kutner, M. H., Nachtsheim, C. J., Neter, J., & Li, W. (2005). _Applied Linear Statistical Models_ (5th ed.). McGraw-Hill.
+
 #### Formula:
 $$
 y = \beta_1 x + \beta_0
@@ -75,6 +87,33 @@ $$
 \beta_0 = 30.5 - 0.5 \times 2021 = 30.5 - 1010.5 = -980
 $$
 So the regression line is $y = 0.5x - 980$.
+
+#### Concrete Example: Temperature Rise Over 20 Years
+
+
+Suppose the average summer temperature increases from 22°C in the year 2020 to 24°C in the year 2022.
+
+Let $x = [2020, 2022]$ and $y = [22.0, 24.0]$.
+
+Means:
+$$
+\bar{x} = 2021, \quad \bar{y} = 23.0
+$$
+
+$S_{xx} = (2020-2021)^2 + (2022-2021)^2 = 1^2 + 1^2 = 2
+$S_{xy} = (2020-2021)(22.0-23.0) + (2022-2021)(24.0-23.0) = (-1)(-1) + (1)(1) = 1 + 1 = 2
+
+Slope:
+$$
+\beta_1 = \frac{2}{2} = 1.0
+$$
+Intercept:
+$$
+\beta_0 = 23.0 - 1.0 \times 2021 = 23.0 - 2021.0 = -1998.0
+$$
+So the regression line is $y = 1.0x - 1998.0$.
+
+This means the temperature rises by 1.0°C per year, or 2°C over 2 years.
 
 #### Statistical Significance:
 Pearson correlation coefficient:
@@ -275,3 +314,11 @@ The project implements linear regression using the least squares method, coded m
 ![Summer Rainfall Trend](summer_rain_trend.png)
 
 **Note:** All results are based on the provided dataset and the output of the analysis code. Statistical significance is determined by p-values (p < 0.05).
+
+## 9. References
+
+1. Hastie, T., Tibshirani, R., & Friedman, J. (2009). _The Elements of Statistical Learning_.
+2. Géron, A. (2019). _Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow_.
+3. Goodfellow, I., Bengio, Y., & Courville, A. (2016). _Deep Learning_.
+4. Scikit-learn Documentation: [https://scikit-learn.org](https://scikit-learn.org)
+5. NumPy Documentation: [https://numpy.org](https://numpy.org)
